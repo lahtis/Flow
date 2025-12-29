@@ -1,0 +1,28 @@
+# --- Gemini Bridge Suite - Security & Privacy ---
+
+# Configuration files (Contains your private API Keys)
+model_checker.conf
+*.conf
+
+# Analysis Reports (Generated local output)
+*.txt
+*.log
+
+# --- Python Environment & Temporary Files ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# --- IDE Specific Files (CodeBlocks / VS Code) ---
+.vscode/
+*.layout
+*.depend
+bin/
+obj/
+
+# --- System Files ---
+.DS_Store
+Thumbs.db
