@@ -1,5 +1,5 @@
 # Flow
-This folder contains automated AI-based python scripts that also work in the Linux and Windows ecosystem, searching for Linux news, examining codes. These programs have a configuration-based architecture. Check Flow folder for files.
+This folder contains automated AI-based python scripts that also work in the Linux and Windows ecosystem, searching for Linux news, examining codes. These programs have a configuration-based architecture.
 
 * Linux-news.py  - Linux News AI Automated Fetcher script
 * Gemini Bridge  - Multi-File Analyzer
