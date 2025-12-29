@@ -5,3 +5,4 @@ This folder contains automated AI-based python scripts that also work in the Lin
 * Gemini Bridge  - Multi-File Analyzer
 * clipboard_analyzer.py - Clipboard Analyzer for Code:Blocks
 * Multi-Mode Gemini Bridge Analyzer
+* Model Explorer - (Utility) is a small but important utility program (maintenance tool).
