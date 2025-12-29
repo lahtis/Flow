@@ -1,6 +1,6 @@
 # Model Explorer (Utility)
 
-**Version:** 1.2.0  
+**Version:** 1.0.0  
 **License:** GPLv3  
 **Author:** Tuomas Lähteenmäki
 
