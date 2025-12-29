@@ -1,0 +1,17 @@
+# Linux News - Security & Housekeeping
+
+# Configuration secrets
+config.conf
+*.conf
+
+# News data and reports
+news_reports/
+*.txt
+
+# Python environment & cache
+__pycache__/
+venv/
+.env
+
+# System files
+.DS_Store
