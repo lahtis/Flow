@@ -3,3 +3,4 @@ Automated AI-driven pipeline for tracking Linux ecosystem updates and technical 
 
 * Linux-news.py  - Linux News Automated Fetcher script
 * Gemini Bridge  - Multi-File Analyzer
+* clipboard_analyzer.py - Clipboard Analyzer for Code:Blocks
