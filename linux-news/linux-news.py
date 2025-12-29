@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Linux News Automated Fetcher
+Linux News Automated Fetcher aka Linux News Sniffer
 License: GPLv3
 Version: 2.1
 Author: Tuomas Lähteenmäki
