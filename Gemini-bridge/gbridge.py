@@ -25,7 +25,7 @@ def setup_bridge():
             'attempts': '3'
         }
         config['PROMPT'] = {
-            'template': "You are an experienced developer. Analyze this file and suggest 3 concrete improvements:\n\n{code}"
+            'template': "You are an experienced developer. Analyze this file and suggest 3 concrete improvements: {code}"
         }
         with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
             config.write(f)
