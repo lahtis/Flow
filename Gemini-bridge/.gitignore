@@ -1,0 +1,19 @@
+# Gemini Bridge - Security & Cleanup
+
+# Ignore the configuration file containing your private API Key
+bridge_config.conf
+
+# Ignore the automatically generated reports folder
+analysis_reports/
+
+# Ignore Python cache and environment files
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+.venv/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
