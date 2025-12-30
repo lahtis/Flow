@@ -44,8 +44,22 @@ Jeeves is a sophisticated and discreet personal news butler designed to fetch te
    [API_KEYS]
    groq = YOUR_GROQ_KEY
 
-2.1 **Dependencies**
-* Install Python, feedparser, customtkinter, requests, openai
+
+2.1 **Prerequisites**
+Ensure you have Python 3.x installed. On Linux (Ubuntu/Debian), you may also need to install the header files for Tkinter:
+
+   ```bash
+   sudo apt-get install python3-tk
+
+2.2 **Install Dependencies**
+
+   ```bash
+    `python -m pip install groq google-genai feedparser customtkinter`
+
+or
+
+   ```bash
+    `python -m pip install -r requirements.txt`
 
 
 3. **Usage:**
