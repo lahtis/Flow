@@ -31,7 +31,24 @@ Jeeves is a sophisticated and discreet personal news butler designed to fetch te
 
 ## 🚀 Getting Started
 
-1. **Environment Check:**
+1 **Prerequisites**
+Ensure you have Python 3.x installed. On Linux (Ubuntu/Debian/Windows), you may also need to install the header files for Tkinter:
+
+```bash
+sudo apt-get install python3-tk
+
+1.1 **Install Dependencies**
+
+```bash
+`python -m pip install groq google-genai feedparser customtkinter`
+
+or
+
+```bash
+`python -m pip install -r requirements.txt`
+
+
+2. **Environment Check:**
    Run `python jeeves_logic.py`. The program will automatically create missing folders and a `.gitignore` file to protect your settings.
 
 * GOOGLE_API_KEY -> https://aistudio.google.com/app/apikey
@@ -46,23 +63,6 @@ Jeeves is a sophisticated and discreet personal news butler designed to fetch te
    
    [API_KEYS]
    groq = YOUR_GROQ_KEY
-
-
-2.1 **Prerequisites**
-Ensure you have Python 3.x installed. On Linux (Ubuntu/Debian), you may also need to install the header files for Tkinter:
-
-   ```bash
-   sudo apt-get install python3-tk
-
-2.2 **Install Dependencies**
-
-   ```bash
-    `python -m pip install groq google-genai feedparser customtkinter`
-
-or
-
-   ```bash
-    `python -m pip install -r requirements.txt`
 
 
 3. **Usage:**
