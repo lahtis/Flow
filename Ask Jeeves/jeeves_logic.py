@@ -5,7 +5,7 @@ Jeeves - Personal news butler
 File: ask_jeeves.py and jeeves_logic.py
 Author: [Tuomas Lähteenmäki]
 Version: v2.1.0
-Licence: GNU General Public License v3.0 (GPLv3)
+Licence: GNU General Public License v3.0 (GPLv3) / json MIT
 Website:
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
@@ -311,3 +311,4 @@ if __name__ == "__main__":
     if pending_count > 0:
         # Huom: Jos haluatte myös tämän viestin metadatasta, voitte lisätä sinne "pending_notice"
         print(f"[*] Status: {pending_count} news items are pending analysis, sir.")
+
