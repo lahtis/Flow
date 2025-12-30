@@ -53,6 +53,13 @@ To ensure uninterrupted service, Jeeves employs a dual-provider AI strategy:
 2. **Failover Protocol**: Should the system encounter a `429 Resource Exhausted` error (rate limiting), it immediately switches to the **Groq Mirror** (Llama-3.3-70b).
 3. **Efficiency**: Summaries are processed with native Python JSON parsing, removing the need for static buffer limits.
 
+**Brief summary of the project structure**
+* UI: Modern and cross-platform (customtkinter).
+* Intelligence: Two-stage AI system (google-genai + groq failover).
+* Data: Handling of RSS feeds (feedparser) and JSON storage.
+* Management: Centralized logic (jeeves_logic.py) and configurations (configparser).
+* Stability: Background tasks (threading) and automatic archiving (shutil, datetime).
+  
 ---
 
 ## ⚖️ License & Compliance
