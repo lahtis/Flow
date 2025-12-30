@@ -44,6 +44,9 @@ Jeeves is a sophisticated and discreet personal news butler designed to fetch te
    [API_KEYS]
    groq = YOUR_GROQ_KEY
 
+2.1 **Dependencies**
+* Install Python, feedparser, customtkinter, requests, openai
+
 
 3. **Usage:**
 * Update news and perform analysis: `python ask_jeeves.py`
