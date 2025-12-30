@@ -34,8 +34,8 @@ Jeeves is a sophisticated and discreet personal news butler designed to fetch te
 1. **Environment Check:**
    Run `python jeeves_logic.py`. The program will automatically create missing folders and a `.gitignore` file to protect your settings.
 
-GOOGLE_API_KEY -> https://aistudio.google.com/app/apikey
-GROQ_API_KEY -> https://console.groq.com/home
+* GOOGLE_API_KEY -> https://aistudio.google.com/app/apikey
+* GROQ_API_KEY -> https://console.groq.com/home
 
 3. **Configuration:**
    Open the generated `jeeves.conf` in the root directory and add your API keys:
