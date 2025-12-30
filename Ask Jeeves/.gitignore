@@ -1,0 +1,4 @@
+jeeves.conf
+archive/
+__pycache__/
+*.pyc
