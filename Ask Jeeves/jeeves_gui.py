@@ -4,7 +4,7 @@
 Jeeves - Personal news butler UI
 File: jeeves_gui.py
 Author: [Tuomas Lähteenmäki]
-Version: 3.1.0
+Version: 3.1.5
 Licence: GNU General Public License v3.0 (GPLv3)
 Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
@@ -410,3 +410,4 @@ class JeevesGUI(ctk.CTk):
 if __name__ == "__main__":
     app = JeevesGUI()
     app.mainloop()
+
