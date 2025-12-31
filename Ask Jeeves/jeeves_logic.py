@@ -4,9 +4,9 @@
 Jeeves - Personal news butler
 File: ask_jeeves.py and jeeves_logic.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.1.0
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
-Website:
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
 Notes:
@@ -97,12 +97,44 @@ def get_localized_text(key_path, lang="fi"):
         return f"[{key_path}]"
 
 def get_priority_keywords():
-    """Hakee prioriteettiavainsanat konfiguraatiosta."""
+    """Hakee prioriteettiavainsanat konfiguraatiosta vikasietoisesti."""
     config = configparser.ConfigParser()
-    config.read(CONFIG_FILE, encoding='utf-8')
-    if 'KEYWORDS' in config and 'priority' in config['KEYWORDS']:
-        return [k.strip().lower() for k in config['KEYWORDS']['priority'].split(',') if k.strip()]
+    if os.path.exists(CONFIG_FILE):
+        try:
+            # Yritetään ensin standardia UTF-8
+            config.read(CONFIG_FILE, encoding='utf-8')
+        except (UnicodeDecodeError, Exception):
+            # Jos epäonnistuu, käytetään latin-1 (joka lukee Windowsin ä-kirjaimet oikein)
+            config.read(CONFIG_FILE, encoding='latin-1')
+
+        if 'KEYWORDS' in config and 'priority' in config['KEYWORDS']:
+            return [k.strip() for k in config['KEYWORDS']['priority'].split(',') if k.strip()]
     return []
+
+def get_news_category(title, source_name=""):
+    """Määrittää uutisen kategorian avainsanojen ja lähteen perusteella."""
+    t = title.lower()
+    s = source_name.lower()
+
+    # 1. Pelit ja Steam
+    if any(x in t for x in ['steam', 'gaming', 'proton', 'wine', 'valve', 'peli', 'fps']) or "gaming" in s:
+        return "Gaming"
+
+    # 2. Laitteisto (Hardware)
+    if any(x in t for x in ['nvidia', 'amd', 'intel', 'cpu', 'gpu', 'rtx', 'ryzen', 'benchmarks', 'displayport']):
+        return "Hardware"
+
+    # 3. Tietoturva (Security)
+    if any(x in t for x in ['cve', 'vulnerability', 'security', 'haavoittuvuus', 'patched', 'exploit']):
+        return "Security"
+
+    # 4. Ubuntu
+    if "ubuntu" in t or "canonical" in t:
+        return "Ubuntu"
+
+    # Oletus
+    return "Linux"
+
 
 def format_summary(text):
     """Lisää sisennykset ja kauneusvirheet tekstiin, sir."""

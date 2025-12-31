@@ -4,9 +4,9 @@
 Jeeves - jeeves personality
 File: jeeves_personality.py
 Author: [Tuomas Lähteenmäki]
-Version: 0.1
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
-Website: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description: Jeeves personality.
 Notes:

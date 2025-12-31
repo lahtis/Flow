@@ -4,8 +4,9 @@
 Jeeves - Personal News Butler & Archiver
 File: jeeves_archive.py
 Author: Tuomas Lähteenmäki
-Version: v2.2.0 (Arkistointiversio)
+Version: 3.1.0
 Licence: GNU GPLv3
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description:
     Fetches, analyzes, and archives news using AI (Gemini/Groq).

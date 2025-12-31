@@ -4,9 +4,9 @@
 Jeeves - Personal news butler
 File: jeeves_mirror.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.1.0
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
-Website:
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
 Notes:
@@ -89,8 +89,14 @@ class JeevesMirror:
     def ask_groq(self, title, url):
         # Haetaan AI-ohjeistus ja otsikot metadatasta
         base_instruction = get_localized_text("ai_instruction", self.lang)
-        p_title = get_localized_text("prompt_title", self.lang) or "News"
-        p_source = get_localized_text("prompt_source", self.lang) or "Source"
+        p_title = get_localized_text("prompt_title", self.lang) or "Uutinen"
+        p_source = get_localized_text("prompt_source", self.lang) or "Lähde"
+
+        # Luodaan kielikohtainen system_role
+        if self.lang == "fi":
+            system_role = "Olet Jeeves, suomalainen hovimestari. Seuraat annettuja ohjeita tarkasti ja vastaat suomeksi."
+        else:
+            system_role = "You are Jeeves, a professional butler. Follow the instructions strictly and answer in English."
 
         # Rakennetaan dynaaminen prompt
         prompt = (
@@ -103,7 +109,7 @@ class JeevesMirror:
             chat_completion = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
-                    {"role": "system", "content": "You are a polite and professional butler named Jeeves."},
+                    {"role": "system", "content": system_role}, # Käytetään dynaamista roolia
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.3, # Laskettu hieman tarkkuuden vuoksi
@@ -111,7 +117,7 @@ class JeevesMirror:
             )
             return chat_completion.choices[0].message.content.strip()
         except Exception as e:
-            print(f"[!] Groq-virhe: {e}")
+            print(f"[!] Groq-Error: {e}")
             return None
 
 if __name__ == "__main__":

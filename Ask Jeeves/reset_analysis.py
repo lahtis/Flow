@@ -4,9 +4,9 @@
 Jeeves - Personal news butler
 File: reset_analysis.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.1.0
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
-Website:
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
 Notes:

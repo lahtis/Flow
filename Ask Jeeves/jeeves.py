@@ -4,8 +4,9 @@
 Jeeves - Personal News Butler
 File: jeeves.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.2.0
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description:
     Main orchestrator for the Jeeves system. Manages the workflow between

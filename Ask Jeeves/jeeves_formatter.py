@@ -2,7 +2,9 @@
 """
 Jeeves - Personal News Butler
 File: jeeves_formatter.py
-Description: Hoitaa uutisraportin visuaalisen muotoilun ja lähdeviitteet.
+Version: 3.1.0
+Description: Handles the visual layout and references of a news report.
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 """
 
 import html

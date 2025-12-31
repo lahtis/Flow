@@ -2,8 +2,9 @@
 Jeeves - Personal news butler
 File: sanitize_jeeves.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.1.1
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description:
 This script repairs JSON syntax errors in personality.json and

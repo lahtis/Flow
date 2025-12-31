@@ -2,11 +2,11 @@
 
 """
 Jeeves - Personal news butler UI
-File: ask_jeeves.py and jeeves_logic.py, jeeves_gui.py
+File: jeeves_gui.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.1.0
+Version: 3.1.0
 Licence: GNU General Public License v3.0 (GPLv3)
-Website:
+Source: https://github.com/lahtis/Flow/tree/main/Ask%20Jeeves
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
 Notes:
@@ -20,9 +20,13 @@ import threading
 import webbrowser
 import json
 import os
-from jeeves_logic import MEMORY_FILE, METADATA_FILE, JeevesMemory, get_localized_text, get_priority_keywords
+from jeeves_logic import MEMORY_FILE, METADATA_FILE, JeevesMemory, get_localized_text, get_priority_keywords, get_time_based_greeting
 from PIL import Image
 from jeeves_personality import JeevesPersonality
+from jeeves_updater import check_for_updates
+
+# Päivitetty versionumero tähän
+CURRENT_VERSION = "3.1.0"
 
 class ConsoleRedirector:
     def __init__(self, textbox):
@@ -181,11 +185,105 @@ class JeevesGUI(ctk.CTk):
 
         sys.stdout = ConsoleRedirector(self.console_box)
         self.current_entry = None
+
+        # Luodaan pieni 100 millisekunnin viive, jotta loki ehtii mukaan
+        self.after(100, self.start_up_routines)
+
+    def start_up_routines(self):
+        """Suorittaa alkutoimet niin, että ne ehtivät lokiin saakka."""
+        startup_msg = get_localized_text("gui_startup_msg", self.lang)
+        print(startup_msg)
         self.load_news()
+        self.check_for_app_updates()
+
+    def check_for_app_updates(self):
+        import threading
+        from jeeves_logic import PersonalityEngine
+        from jeeves_updater import get_remote_version
+
+    def task():
+        # Suoritetaan verkkotarkistus taustalla
+        update_data = get_remote_version(CURRENT_VERSION)
+
+        # Haetaan kohtelias tervehdys
+        greeting = PersonalityEngine.get_time_of_day_greeting()
+
+    def get_translated_category(self, raw_cat):
+        # Haetaan ui-osio
+        ui_texts = get_localized_text("ui", self.lang) or {}
+        # Haetaan category-sanakirja ui-osion sisältä
+        cat_map = ui_texts.get("category", {})
+        # Palautetaan käännös tai alkuperäinen jos käännöstä ei löydy
+        return cat_map.get(raw_cat, raw_cat)
 
     def filter_news(self, category):
-        self.speech_bubble.configure(text=f"Searching for {category} news, sir...")
+        # 1. Määritetään oletukset
+        localized_cat = category
+        msg_template = "Etsitään uutisia {category}-kategoriasta, sir."
+
+        try:
+            # 2. Haetaan kieli (oletus 'fi')
+            current_lang = self.lang if hasattr(self, 'lang') else 'fi'
+
+            # 3. Luetaan personality.json suoraan (varmistetaan tiedostopolku)
+            import json
+            import os
+            json_path = os.path.join("resources", "personality.json")
+
+            if os.path.exists(json_path):
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+
+                # Navigoidaan syvälle JSON-rakenteeseen: fi -> ui -> category
+                lang_data = data.get(current_lang, {})
+                ui_data = lang_data.get("ui", {})
+
+                # Haetaan lausepohja
+                msg_template = ui_data.get("gui_filtering_msg", msg_template)
+
+                # Haetaan kategorian käännös
+                cat_translations = ui_data.get("category", {})
+                localized_cat = cat_translations.get(category, category)
+        except Exception as e:
+            print(f"DEBUG: Virhe käännöksessä: {e}")
+
+        # 4. Päivitetään puhekupla
+        final_msg = msg_template.replace("{category}", localized_cat)
+        self.speech_bubble.configure(text=final_msg)
+
+        # 5. Suoritetaan varsinainen haku
         self.load_news(filter_cat=category)
+
+    def check_priority(self, title):
+        # Haetaan sanat configista
+        priority_keywords = self.get_keywords_from_config()
+
+        # Määritellään oikeasti kriittiset termit
+        critical_terms = ["CVE", "CRITICAL", "SECURITY", "VULNERABILITY"]
+
+        title_upper = title.upper()
+        for word in priority_keywords:
+            if word.upper() in title_upper:
+                # Jos sana on kriittisellä listalla -> [!!!]
+                if any(crit in word.upper() for crit in critical_terms):
+                    return True, "[!!!]"
+                # Muutoin se on vain kiinnostava -> [⭐]
+                return True, "[⭐]"
+
+        return False, ""
+
+    def update_speech_bubble(self, title):
+        is_priority, prefix = self.check_priority_status(title)
+
+        if is_priority:
+            # TÄMÄ on se teidän toivoma lause:
+            msg = "Sir, huomasin uutisen, joka liittyy erityisesti teidän prioriteetteihinne."
+            self.speech_bubble.configure(text=msg)
+        else:
+            # Tavallinen tervehdys
+            from jeeves_logic import get_localized_text
+            msg = get_localized_text("ui.gui_select_news", self.lang)
+            self.speech_bubble.configure(text=msg)
 
     def load_news(self, filter_cat=None):
         for widget in self.scrollable_list.winfo_children():
@@ -242,9 +340,32 @@ class JeevesGUI(ctk.CTk):
             webbrowser.open(self.current_entry['url'])
 
     def run_logic_task(self):
-        process = subprocess.Popen([sys.executable, "jeeves.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        for line in process.stdout:
-            print(line, end="")
+        """Suorittaa uutisten haun taustalla ja lukee lokia UTF-8 muodossa."""
+        # 1. Pakotetaan ympäristö käyttämään UTF-8 (korjaa ääkköset)
+        env = os.environ.copy()
+        env["PYTHONIOENCODING"] = "utf-8"
+
+        try:
+            # 2. Käynnistetään prosessi parannetuilla asetuksilla
+            process = subprocess.Popen(
+                [sys.executable, "jeeves.py"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8", # Varmistaa, että Python lukee tekstin oikein
+                env=env
+            )
+
+            # 3. Luetaan lokia reaaliajassa
+            if process.stdout:
+                for line in process.stdout:
+                    print(line, end="") # Ohjautuu vihreään laatikkoon
+
+            process.wait()
+        except Exception as e:
+            print(f"[!] Virhe uutisten haussa: {e}")
+
+        # 4. Palataan pääsäikeeseen päivittämään lista
         self.after(0, self.finish_refresh)
 
     def on_refresh(self):
@@ -263,6 +384,28 @@ class JeevesGUI(ctk.CTk):
                 count = len(current_news) if cat == "Default" else sum(1 for e in current_news if e.get('category') == cat)
                 self.filter_buttons[cat].configure(text=f"{style['icon']}\n{count}")
         self.load_news()
+
+    def check_for_app_updates(self):
+        import threading
+        from jeeves_logic import get_time_based_greeting, get_localized_text
+        from jeeves_updater import check_for_updates
+
+        def task():
+            update_data = check_for_updates(CURRENT_VERSION)
+            greeting = get_time_based_greeting(self.lang)
+
+            if update_data:
+                new_ver, _ = update_data
+                # Tehdään dynaaminen haku JSON-tiedostosta
+                raw_msg = get_localized_text("update_available", self.lang)
+                msg = raw_msg.replace("{greeting}", greeting).replace("{version}", new_ver)
+            else:
+                raw_msg = get_localized_text("all_systems_ok", self.lang)
+                msg = raw_msg.replace("{greeting}", greeting)
+
+            self.after(0, lambda: self.speech_bubble.configure(text=msg))
+
+        threading.Thread(target=task, daemon=True).start()
 
 if __name__ == "__main__":
     app = JeevesGUI()
