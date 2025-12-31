@@ -1,0 +1,64 @@
+{
+  "fi": {
+    "ui": {
+      "pending": "Odottaa hovimestarin analyysiä, sir.",
+      "status_ready": "Päivitys valmis, sir.",
+      "processing": "Analysoidaan, olkaa hyvä ja odottakaa hetki, herra..."
+    },
+    "ai_instruction": "Analysoi seuraava uutinen. Kirjoita tiivis, asiallinen ja selkeä tiivistelmä suomeksi. ÄLÄ sisällytä tervehdystä, nimeäsi tai lopputoivotuksia. Kirjoita vain uutisen tekninen sisältö.",
+    "personality": {
+      "greetings": {
+        "morning": "Hyvää huomenta, sir. Tässä on tuorein tilannekatsaus.",
+        "day": "Hyvää päivää, sir. Tässä on päivän tilannekatsaus.",
+        "afternoon": "Hyvää iltapäivää, sir. Tässä on tuorein tilannekatsaus.",
+        "evening": "Hyvää iltaa, sir. Tässä on illan viimeisin tilannekatsaus.",
+        "night": "Hyvää yötä, sir. Tässä on yöllinen tilannekatsaus."
+      },
+      "category_comments": {
+        "Security": "Minulla on valitettavasti hieman huolestuttavia uutisia tietoturvasta, sir.",
+        "Critical": "Tämä vaikuttaa erittäin kriittiseltä, herra. Suosittelen välitöntä huomiota.",
+        "Steam": "Pieni hetki viihteelle, herra? Steam-uutisia, olkaa hyvä.",
+        "Linux": "Kernel-rintamalla on taas liikettä, kuten saatoimme odottaa, sir.",
+        "Default": "Tässä uutinen, jota pyysitte, sir."
+      },
+      "analysis_intro": "Hyvää päivää, Olen Jeeves, teidän hovimestarinne. Uutinen, jonka haluatte.",
+      "analysis_outro": "Toivottavasti tämä tiivis yhteenveto on ollut avuksi, herrani. Voinko olla avuksi muissa asioissa?",
+      "idle_comments": [
+        "Hyvä herrani, minä olen Jeeves, olen täällä palvelemaan teitä.",
+        "Onko teillä muita pyyntöjä, joita voisin toteuttaa?",
+        "Odotan ohjeitanne, herra. Kaikki on tällä hetkellä valmiina."
+      ]
+    }
+  },
+  "en": {
+    "ui": {
+      "pending": "Waiting for the butler's analysis, sir.",
+      "status_ready": "Update complete, sir.",
+      "processing": "Analyzing, please wait a moment, sir..."
+    },
+    "ai_instruction": "Analyze the following news. Write a concise, factual, and clear summary in English. Do NOT include greetings, your name, or any closing remarks. Only write the technical content of the news.",
+    "personality": {
+      "greetings": {
+        "morning": "Good morning, sir. Here is the latest situational report.",
+        "day": "Good day, sir. Here is the situation report for the day.",
+        "afternoon": "Good afternoon, sir. Here is the latest situational report.",
+        "evening": "Good evening, sir. Here is the latest situational report for the evening.",
+        "night": "Good night, sir. Here is the nightly situational report."
+      },
+      "category_comments": {
+        "Security": "I am afraid I have some concerning news regarding security, sir.",
+        "Critical": "This appears to be highly critical, sir. I recommend immediate attention.",
+        "Steam": "A moment for entertainment, perhaps? Steam news for you, sir.",
+        "Linux": "Movement on the kernel front, as one might expect, sir.",
+        "Default": "Here is the news you requested, sir."
+      },
+      "analysis_intro": "I am Jeeves, your butler, and I am pleased to summarize this news for you.",
+      "analysis_outro": "I hope this summary has been useful to you, sir. Can I assist you with anything else?",
+      "idle_comments": [
+        "I am here to serve you, sir.",
+        "Do you have any other requests I could fulfill?",
+        "I await your instructions, sir."
+      ]
+    }
+  }
+}
