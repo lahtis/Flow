@@ -5,7 +5,7 @@ Jeeves - Personal news butler UI
 File: ask_jeeves.py and jeeves_logic.py, jeeves_gui.py
 Author: [Tuomas Lähteenmäki]
 Version: v2.1.0
-Licence: GNU General Public License v3.0 (GPLv3) / json MIT
+Licence: GNU General Public License v3.0 (GPLv3)
 Website:
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
@@ -21,6 +21,8 @@ import webbrowser
 import json
 import os
 from jeeves_logic import MEMORY_FILE, METADATA_FILE, JeevesMemory, get_localized_text, get_priority_keywords
+from PIL import Image
+from jeeves_personality import JeevesPersonality
 
 class ConsoleRedirector:
     def __init__(self, textbox):
@@ -39,39 +41,113 @@ class JeevesGUI(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        # Alustetaan muisti kielen hakemista varten
+        # 1. ALUSTETAAN MUUTTUJAT JA LADATAAN DATA HETI
+        self.category_styles = {}
+        self.filter_buttons = {}
         self.memory = JeevesMemory()
-        self.lang = self.memory.lang # Haetaan kieliasetus automaattisesti
+        self.lang = self.memory.lang
 
-        # Asetetaan ikkunan otsikko metadatasta
+        # --- LADATAAN TYYLIT TIEDOSTOSTA ENNEN KUIN NIITÄ KÄYTETÄÄN ---
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        personality_path = os.path.join(current_dir, "resources", "personality.json")
+
+        try:
+            with open(personality_path, "r", encoding="utf-8") as f:
+                full_metadata = json.load(f)
+                self.category_styles = full_metadata.get("category_styles", {})
+                print(f"[*] Jeeves: Tyylit ladattu kohteesta: {personality_path}")
+        except Exception as e:
+            print(f"[!] Jeeves: Tyylien lataus epäonnistui: {e}")
+            self.category_styles = {"Default": {"icon": "📰", "color": "transparent"}}
+
+        # Ikkunan perusasetukset
         self.title(get_localized_text("gui_title", self.lang))
         self.geometry("1100x850")
         ctk.set_appearance_mode("dark")
 
-        # Asetetaan ikkunan ruudukon säännöt
-        self.grid_columnconfigure(0, weight=0, minsize=320) # Vasen: Ei kasva, vähintään 320px
-        self.grid_columnconfigure(1, weight=1)             # Oikea: Vie kaiken lopun tilan
+        self.grid_columnconfigure(0, weight=0, minsize=320)
+        self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
         # --- VASEN PANEELI (KIINTEÄ) ---
-        # Asetetaan width=300 tai haluamanne leveys pikseleinä
-        self.sidebar = ctk.CTkFrame(self, width=320) # Kiinteä leveys
+        self.sidebar = ctk.CTkFrame(self, width=320)
         self.sidebar.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
-        self.sidebar.grid_propagate(False) # Lukitus: ei muuta kokoaan sisällön mukaan
+        self.sidebar.grid_propagate(False)
 
-
+        # 1. Päivitys-nappi
         self.refresh_btn = ctk.CTkButton(self.sidebar,
                                         text=get_localized_text("gui_refresh", self.lang),
                                         command=self.on_refresh)
-        self.refresh_btn.pack(pady=20, padx=10, fill="x")
+        self.refresh_btn.pack(pady=(20, 10), padx=10, fill="x")
 
-        self.scrollable_list = ctk.CTkScrollableFrame(self.sidebar,
+        # --- JAETAAN ALAPUOLI: IKONIT JA LISTA ---
+        self.sidebar_content = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        self.sidebar_content.pack(expand=True, fill="both")
+
+        # A. Ikonipalkki (Vasen reuna)
+        self.icon_bar = ctk.CTkFrame(self.sidebar_content, width=50, fg_color="transparent")
+        self.icon_bar.pack(side="left", fill="y", padx=(2, 0), pady=5)
+        self.icon_bar.pack_propagate(False)
+
+        # B. Uutislista (Oikea reuna)
+        self.scrollable_list = ctk.CTkScrollableFrame(self.sidebar_content,
                                                      label_text=get_localized_text("gui_news_feed", self.lang))
-        self.scrollable_list.pack(expand=True, fill="both", padx=5, pady=5)
+        self.scrollable_list.pack(side="left", expand=True, fill="both", padx=5, pady=5)
+        self.scrollable_list._scrollbar.configure(width=8)
+
+        # 2. Luodaan suodatin-ikonit pystyriviin
+        current_news = self.memory.get_report()
+        for cat, style in self.category_styles.items():
+            count = len(current_news) if cat == "Default" else sum(1 for e in current_news if e.get('category') == cat)
+
+            btn = ctk.CTkButton(
+                self.icon_bar,
+                text=f"{style['icon']}\n{count}",
+                width=40,
+                height=45,
+                fg_color=style['color'],
+                hover_color="#444444",
+                font=ctk.CTkFont(size=11, weight="bold"),
+                command=lambda c=cat: self.filter_news(c)
+            )
+            btn.pack(pady=3, anchor="center")
+            self.filter_buttons[cat] = btn
 
         # --- OIKEA PANEELI ---
         self.content = ctk.CTkFrame(self, fg_color="transparent")
         self.content.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
+
+        self.personality = JeevesPersonality()
+
+        self.jeeves_panel = ctk.CTkFrame(self.content, fg_color=("#ebebeb", "#2b2b2b"), corner_radius=10)
+        self.jeeves_panel.pack(fill="x", pady=(0, 20))
+
+        self.avatar_frame = ctk.CTkFrame(self.jeeves_panel, width=80, height=80, fg_color="transparent")
+        self.avatar_frame.pack(side="left", padx=15, pady=10)
+        self.avatar_frame.pack_propagate(False)
+
+        image_path = os.path.join(current_dir, "resources", "jeeves_avatar.png")
+        try:
+            self.jeeves_image = ctk.CTkImage(
+                light_image=Image.open(image_path),
+                dark_image=Image.open(image_path),
+                size=(70, 70)
+            )
+            self.avatar_label = ctk.CTkLabel(self.avatar_frame, image=self.jeeves_image, text="")
+        except Exception as e:
+            self.avatar_label = ctk.CTkLabel(self.avatar_frame, text="👤", font=ctk.CTkFont(size=40))
+
+        self.avatar_label.pack(expand=True)
+
+        self.speech_bubble = ctk.CTkLabel(
+            self.jeeves_panel,
+            text=self.personality.get_greeting(self.lang),
+            font=ctk.CTkFont(size=14, slant="italic"),
+            wraplength=600,
+            justify="left",
+            anchor="w"
+        )
+        self.speech_bubble.pack(side="left", fill="both", expand=True, padx=(0, 20), pady=10)
 
         self.title_var = ctk.StringVar(value=get_localized_text("gui_select_news", self.lang))
         self.title_label = ctk.CTkLabel(self.content, textvariable=self.title_var,
@@ -94,7 +170,6 @@ class JeevesGUI(ctk.CTk):
                                           command=self.open_url, state="disabled")
         self.open_web_btn.pack(side="right")
 
-        # --- JÄRJESTELMÄLOKI ---
         self.console_label = ctk.CTkLabel(self.content,
                                           text=get_localized_text("gui_system_log", self.lang),
                                           font=ctk.CTkFont(size=11, weight="bold"))
@@ -105,43 +180,41 @@ class JeevesGUI(ctk.CTk):
         self.console_box.configure(state="disabled")
 
         sys.stdout = ConsoleRedirector(self.console_box)
-
         self.current_entry = None
         self.load_news()
-        print(get_localized_text("gui_loaded", self.lang))
 
-    def load_news(self):
-        # Tyhjennetään vanhat uutiset listasta
+    def filter_news(self, category):
+        self.speech_bubble.configure(text=f"Searching for {category} news, sir...")
+        self.load_news(filter_cat=category)
+
+    def load_news(self, filter_cat=None):
         for widget in self.scrollable_list.winfo_children():
             widget.destroy()
-
         try:
             self.memory = JeevesMemory()
             entries = self.memory.get_report(days=7)
-
-            # --- DYNAAMINEN PRIORISOINTI ---
             prio_keywords = get_priority_keywords()
-            # Lajitellaan: prioriteetit ensin
             entries.sort(key=lambda x: any(k in x['title'].lower() for k in prio_keywords), reverse=True)
 
             for entry in entries:
+                cat_name = entry.get('category', 'Default')
+                if filter_cat and filter_cat != "Default" and cat_name != filter_cat:
+                    continue
+
                 is_priority = any(k in entry['title'].lower() for k in prio_keywords)
-
-                # OTSIKON KATKAISU (Estää ruudun hyppimisen)
                 orig_title = entry.get('title', 'No Title')
-                disp_title = (orig_title[:42] + "..") if len(orig_title) > 42 else orig_title
+                disp_title = (orig_title[:38] + "..") if len(orig_title) > 38 else orig_title
+                style = self.category_styles.get(cat_name, self.category_styles.get("Default", {"icon": "•", "color": "transparent"}))
 
-                btn_text = f"{'⚠️ ' if is_priority else '• '}{disp_title}"
+                bg_color = "#3d1414" if is_priority else style['color']
+                icon = "⚠️" if is_priority else style['icon']
 
-                # Pidetään värit tyylikkäänä
                 btn = ctk.CTkButton(self.scrollable_list,
-                                    text=btn_text,
+                                    text=f"{icon} {disp_title}",
                                     anchor="w",
-                                    fg_color="transparent" if not is_priority else "#3d1414",
-                                    hover_color="#5a1d1d" if is_priority else None,
+                                    fg_color=bg_color,
                                     command=lambda e=entry: self.show_details(e))
                 btn.pack(fill="x", pady=2, padx=5)
-
         except Exception as e:
             print(f"[!] Error loading news: {e}")
 
@@ -149,34 +222,16 @@ class JeevesGUI(ctk.CTk):
         self.current_entry = entry
         self.title_var.set(entry['title'])
         self.open_web_btn.configure(state="normal")
+        category = entry.get('category', 'Default')
+        priority_keywords = get_priority_keywords()
+        priority = "Critical" if any(k in entry['title'].lower() for k in priority_keywords) else "Normal"
+        self.speech_bubble.configure(text=self.personality.get_commentary(category, priority, self.lang))
 
-        # 1. Haetaan lokalisoidut raamit ja fraasit
         intro = get_localized_text("analysis_intro", self.lang)
-        greetings = get_localized_text("common_greetings", self.lang)
+        source_label = get_localized_text("ui.sources_label", self.lang) or "LÄHTEET JA VIITTEET:"
+        full_display_text = f"{intro}\n\n{entry.get('summary', '').strip()}\n"
+        full_display_text += f"\n{'-'*60}\n{source_label}\n• Lähde: {entry.get('url', '#')}\n• Kategoria: {category}\n{'-'*60}"
 
-        # Varmistetaan, että greetings on lista (jos metadatassa on virhe)
-        if isinstance(greetings, str):
-            greetings = [greetings]
-        elif not greetings:
-            greetings = []
-
-        # 2. Puhdistetaan raaka teksti hovimestarin fraaseista
-        cleaned = entry.get('summary', '')
-
-        # Poistetaan intro, jos se on jo tallennettu summaryyn (estetään tuplaus)
-        cleaned = cleaned.replace(intro, "").strip()
-
-        # Poistetaan listatut tervehdykset
-        for phrase in greetings:
-            cleaned = cleaned.replace(phrase, "").strip()
-
-        # 3. MUOTOILU: Pidetään teksti siistinä mutta juoksevana
-        final_text = cleaned.strip()
-
-        # 4. Kootaan lopputulos (Intro ja puhdas sisältö)
-        full_display_text = f"{intro}\n\n{final_text}"
-
-        # 5. Päivitys käyttöliittymään
         self.summary_text.configure(state="normal")
         self.summary_text.delete("0.0", "end")
         self.summary_text.insert("0.0", full_display_text)
@@ -186,23 +241,29 @@ class JeevesGUI(ctk.CTk):
         if self.current_entry:
             webbrowser.open(self.current_entry['url'])
 
-    def on_refresh(self):
-        self.refresh_btn.configure(state="disabled", text=get_localized_text("gui_refreshing", self.lang))
-        print(get_localized_text("gui_refresh_start", self.lang))
-        threading.Thread(target=self.run_logic_task, daemon=True).start()
-
     def run_logic_task(self):
         process = subprocess.Popen([sys.executable, "jeeves.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         for line in process.stdout:
             print(line, end="")
         self.after(0, self.finish_refresh)
 
+    def on_refresh(self):
+        self.console_box.configure(state="normal")
+        self.console_box.delete("0.0", "end")
+        self.console_box.configure(state="disabled")
+        self.refresh_btn.configure(state="disabled", text=get_localized_text("gui_refreshing", self.lang))
+        threading.Thread(target=self.run_logic_task, daemon=True).start()
+
     def finish_refresh(self):
         self.refresh_btn.configure(state="normal", text=get_localized_text("gui_refresh", self.lang))
+        self.memory = JeevesMemory()
+        current_news = self.memory.get_report()
+        for cat, style in self.category_styles.items():
+            if cat in self.filter_buttons:
+                count = len(current_news) if cat == "Default" else sum(1 for e in current_news if e.get('category') == cat)
+                self.filter_buttons[cat].configure(text=f"{style['icon']}\n{count}")
         self.load_news()
-        print(get_localized_text("gui_refresh_done", self.lang))
 
 if __name__ == "__main__":
     app = JeevesGUI()
     app.mainloop()
-

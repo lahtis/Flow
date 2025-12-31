@@ -1,35 +1,38 @@
 # -*- coding: utf-8 -*-
 
 """
-Jeeves - Personal news butler
+Jeeves - Personal News Butler
 File: jeeves.py
 Author: [Tuomas Lähteenmäki]
-Version: v2.1.0
-Licence: GNU General Public License v3.0 (GPLv3) /Json MIT
-Website:
+Version: v2.2.0
+Licence: GNU General Public License v3.0 (GPLv3)
 
-Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
-Notes:
-- Localization: Finnish (fi) and English (en).
+Description:
+    Main orchestrator for the Jeeves system. Manages the workflow between
+    RSS fetching (Gemini), Failover (Groq Mirror), and Archiving.
 """
 
 import subprocess
 import sys
 import configparser
+import os
 from jeeves_logic import check_environment, JeevesMemory, get_localized_text, CONFIG_FILE
+from jeeves_archive import JeevesArchive
+
+
+# Tuodaan arkistointi mukaan tarkistuksia varten
+from jeeves_archive import JeevesArchive
 
 def main():
-    # 1. Luetaan kieli suoraan tiedostosta, jotta emme ole riippuvaisia memory-olion rakenteesta
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE, encoding='utf-8')
-
-    # Haetaan kieli (oletuksena 'en')
     lang = config['SETTINGS'].get('language', 'en').lower()
 
-    # 2. Alustetaan muisti uutisia varten
+    # Alustetaan muisti ja arkisto
     memory = JeevesMemory()
+    archive = JeevesArchive()
 
-    # 3. Käynnistys (Metadatasta)
+    # 3. Käynnistys
     print(get_localized_text("starting_routines", lang) or "[*] Starting routines...")
 
     # 4. Varmistus ja Gemini
@@ -37,22 +40,21 @@ def main():
     print(get_localized_text("fetching_news_gemini", lang) or "[*] Fetching news...")
     subprocess.run([sys.executable, "ask_jeeves.py"])
 
-    # 5. Rästitunnistus (Varmistettu versio)
+    # --- UUSI VAIHE: SYNKRONOINTI ARKISTOON ---
+    # Tämä varmistaa, että myös aiemmin muistiin jääneet uutiset menevät arkistoon
+    metadata_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "jeeves_metadata.json")
+    synced_count = archive.sync_from_metadata(metadata_path)
+    if synced_count > 0:
+        print(f"[*] Jeeves: Herra, synkronoitu {synced_count} uutta uutista arkistoon.")
+    # -----------------------------------------
 
-    subprocess.run([sys.executable, "ask_jeeves.py"])
-
-    # --- TÄRKEÄ LISÄYS ---
-    # Päivitetään muisti-olio lukemaan ask_jeeves.py:n tekemät muutokset levyltä
+    # Päivitetään muisti-olio
     memory = JeevesMemory()
-    # ---------------------
 
+    # 5. Rästitunnistus (Varmistettu versio)
     p_fi = get_localized_text("pending", "fi")
     p_en = get_localized_text("pending", "en")
 
-    # Katsotaan rästiksi uutiset, jotka:
-    # 1. Ovat metadatan mukaisessa odotustilassa
-    # 2. Ovat liian lyhyitä (alle 100 merkkiä on yleensä vain virheilmoitus tai tynkä)
-    # 3. Sisältävät virheen merkkejä (esim. "Error" tai "quota")
     pending = [
         e for e in memory.data['archive']
         if e['summary'] in [p_fi, p_en] or len(e['summary']) < 100 or "quota" in e['summary'].lower()
@@ -67,8 +69,6 @@ def main():
 
         # AJETAAN PEILI
         subprocess.run([sys.executable, "jeeves_mirror.py"])
-
-        # TÄRKEÄÄ: Ladataan muisti uudelleen, jotta loppuraportti näyttää Mirrorin tekemät analyysit!
         memory = JeevesMemory()
 
     # 6. Loppuraportti
@@ -78,4 +78,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

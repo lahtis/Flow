@@ -5,7 +5,7 @@ Jeeves - Personal news butler
 File: ask_jeeves.py and jeeves_logic.py
 Author: [Tuomas Lähteenmäki]
 Version: v2.1.0
-Licence: GNU General Public License v3.0 (GPLv3) / json MIT
+Licence: GNU General Public License v3.0 (GPLv3)
 Website:
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
@@ -15,11 +15,15 @@ Notes:
 
 import json
 import os
-import sys
+import sys, io
 import configparser
 import time
 import shutil
 from datetime import datetime, timedelta
+
+# Pakotetaan standarditulosteet UTF-8 muotoon
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 # 1. Peruspolut
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +42,8 @@ for directory in [RESOURCES_DIR, MEMORY_DIR]:
 
 # 3. Tiedostojen polut
 MEMORY_FILE = os.path.join(MEMORY_DIR, "jeeves_memory.json")
-METADATA_FILE = os.path.join(RESOURCES_DIR, "jeeves_metadata.json") # metadata (Localization)
+# METADATA_FILE = os.path.join(RESOURCES_DIR, "jeeves_metadata.json") # metadata (Localization)
+METADATA_FILE = os.path.join(RESOURCES_DIR, "personality.json")
 CONFIG_FILE = os.path.join(BASE_DIR, "jeeves.conf") # Pidetään juuressa turvassa
 
 if not os.path.exists(METADATA_FILE):
@@ -54,33 +59,42 @@ def get_config_value(key, lang="fi"):
         print(f"[!] Error retrieving configuration: {e}")
         return None
 
-def get_localized_text(key, lang="fi"):
-    """Hakee metadatasta oikean fraasin kielen mukaan, fallbackina englanti."""
+def get_localized_text(key_path, lang="fi"):
     try:
+        # Varmistetaan, että käytetään globaalia polkua
         if not os.path.exists(METADATA_FILE):
-            return f"[{key}]"
+            return f"[{key_path}]"
 
         with open(METADATA_FILE, 'r', encoding='utf-8') as f:
-            metadata = json.load(f)
+            data = json.load(f)
 
-        # 1. Haetaan ensisijainen kielilohko (esim. 'en')
-        lang_data = metadata.get(lang)
+        # Valitaan kieli tai fallback englantiin
+        lang_data = data.get(lang, data.get("en", {}))
 
-        # 2. Jos kielilohkoa ei ole, haetaan englanti
-        if not lang_data:
-            lang_data = metadata.get("en", {})
+        # 1. Piste-navigointi (esim. "personality.greetings.morning")
+        keys = key_path.split('.')
+        val = lang_data
+        for k in keys:
+            if isinstance(val, dict) and k in val:
+                val = val[k]
+            else:
+                val = None
+                break
 
-        # 3. Haetaan varsinainen teksti
-        result = lang_data.get(key)
+        # Jos löytyi validi merkkijono, palautetaan se
+        if val and isinstance(val, str):
+            return val
 
-        # 4. Fallback: Jos avainta ei löytynyt kielilohkosta, kokeillaan vielä enkku-lohkosta
-        if result is None and lang != "en":
-            result = metadata.get("en", {}).get(key, "")
+        # 2. Varajärjestelmä automaattisille lohkohauille
+        for section in ["ui", "personality"]:
+            if section in lang_data and key_path in lang_data[section]:
+                result = lang_data[section][key_path]
+                # Jos kyseessä on lista (kuten idle_comments), palautetaan se sellaisenaan
+                return result
 
-        return result or ""
-    except Exception as e:
-        print(f"[!] Virhe metadatan luvussa: {e}")
-        return ""
+        return f"[{key_path}]"
+    except Exception:
+        return f"[{key_path}]"
 
 def get_priority_keywords():
     """Hakee prioriteettiavainsanat konfiguraatiosta."""
@@ -229,86 +243,81 @@ class JeevesMemory:
         cutoff = now - (days * 24 * 60 * 60)
         return [e for e in self.data["archive"] if float(e.get("timestamp", 0)) >= cutoff]
 
+
+def get_time_based_greeting(lang="fi"):
+    """Hakee tervehdyksen kellonajan mukaan käyttäen uutta polkurakennetta."""
+    hour = datetime.now().hour
+
+    if 5 <= hour < 10:
+        key = "personality.greetings.morning"
+    elif 10 <= hour < 14:
+        key = "personality.greetings.day"
+    elif 14 <= hour < 18:
+        key = "personality.greetings.afternoon"
+    elif 18 <= hour < 22:
+        key = "personality.greetings.evening"
+    else:
+        key = "personality.greetings.night"
+
+    return get_localized_text(key, lang)
+
+def get_category_comment(category, lang="fi"):
+    """Hakee hovimestarin kommentin uutisluokasta."""
+    # Varmistetaan, että kategoria alkaa isolla (esim. "Security")
+    formatted_cat = category.capitalize()
+    comment = get_localized_text(f"personality.category_comments.{formatted_cat}", lang)
+
+    # Fallback jos kategorialle ei ole omaa kommenttia
+    if comment.startswith("["):
+        comment = get_localized_text("personality.category_comments.Default", lang)
+
+    return comment
+
 if __name__ == "__main__":
     check_environment()
 
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE, encoding='utf-8')
 
-    # 1. HAETAAN KIELI JA FRAASIT DYNAAMISESTI
+    # 1. Haetaan asetukset
     current_lang = config['SETTINGS'].get('language', 'fi').lower()
+    show_full = "--full" in sys.argv
 
-    # Määritetään kellonajasta riippuva tervetuloa-viesti
-    tunti = datetime.now().hour
-    if 5 <= tunti < 10:
-        greeting_key = "greeting_morning"
-    elif 10 <= tunti < 13:
-        greeting_key = "greeting_day"
-    elif 13 <= tunti < 17:
-        greeting_key = "greeting_afternoon"  # Uusi kategoria
-    elif 17 <= tunti < 22:
-        greeting_key = "greeting_evening"
-    else:
-        greeting_key = "greeting_night"
-
-    # Haetaan dynaaminen tervehdys, tai fallbackina vanha geneerinen
-    greeting = get_localized_text(greeting_key, current_lang) or get_localized_text("greeting", current_lang)
-    greeting = greeting.upper()
-
-    # POISTETTU: greeting = get_localized_text("greeting", current_lang).upper() <-- Tämä rivi kumosi aiemman logiikan
-
-    no_news_msg = get_localized_text("no_news", current_lang)
-    pending_indicator = get_localized_text("pending", current_lang) # Suodatusta varten
-
-    # Luetaan hakusanat
+    # Haetaan prioriteettisanat
     keywords_str = config['KEYWORDS'].get('priority', '') if 'KEYWORDS' in config else ''
     keywords = [k.strip().lower() for k in keywords_str.split(',') if k.strip()]
 
+    # 2. Alustetaan muisti
     memory = JeevesMemory()
-    show_full = "--full" in sys.argv
-
-    print(f"\n{'='*60}")
-    print(f"    {greeting}")
-    print(f"{'='*60}\n")
-
     entries = memory.get_report(days=7)
 
-    if not entries:
-        print(f"{no_news_msg}")
-    else:
-        report_data = {}
-        for e in entries:
-            cat = e['category']
-            if cat not in report_data: report_data[cat] = []
-            report_data[cat].append(e)
+    # --- UUSI MODULAARINEN TULOSTUS ---
+    # Tuodaan uusi muotoilija (varmista että jeeves_formatter.py on olemassa)
+    try:
+        from jeeves_formatter import JeevesFormatter
+        formatter = JeevesFormatter(get_localized_text, current_lang)
 
-        for category, items in report_data.items():
-            print(f"--- {category.upper()} ---")
-            for item in items:
-                # Käytetään metadatasta haettua pending-tekstiä tunnistukseen
-                is_pending = pending_indicator in item['summary']
-                is_priority = any(k in item['title'].lower() for k in keywords)
+        greeting = get_time_based_greeting(current_lang)
+        pending_indicator = get_localized_text("ui.pending", current_lang)
 
-                if is_priority:
-                    prefix = "[!!!]"
-                else:
-                    prefix = "[ ? ]" if is_pending else "[ + ]"
+        # Rakennetaan raportti käyttäen uutta luokkaa
+        full_report = formatter.build_report(
+            entries=entries,
+            keywords=keywords,
+            greeting=greeting,
+            pending_indicator=pending_indicator,
+            show_full=show_full
+        )
 
-                print(f"  {prefix} {item['title']}")
+        # Tulostetaan koko komeus kerralla
+        print(full_report)
 
-                if show_full:
-                    if is_pending:
-                        # Tähän voisi vielä lisätä pienen dynaamisen huomautuksen
-                        print(f"      ({pending_indicator})")
-                    else:
-                        indented_summary = item['summary'].replace('\n', '\n      ')
-                        print(f"      {indented_summary}")
-                    print(f"      Lähde: {item['url']}\n")
-            print("")
+    except ImportError:
+        print("[!] Jeeves: Muotoilumoduulia (jeeves_formatter.py) ei löytynyt!")
+    # ----------------------------------
 
-    # Lasketaan odottavat dynaamisesti
-    pending_count = sum(1 for e in entries if pending_indicator in e['summary'])
+    # 3. Loppustatus (montako analysoimatonta)
+    pending_count = sum(1 for e in entries if get_localized_text("ui.pending", current_lang) in e['summary'])
     if pending_count > 0:
-        # Huom: Jos haluatte myös tämän viestin metadatasta, voitte lisätä sinne "pending_notice"
-        print(f"[*] Status: {pending_count} news items are pending analysis, sir.")
-
+        processing_text = get_localized_text("ui.processing", current_lang)
+        print(f"[*] Status: {pending_count} {processing_text}")

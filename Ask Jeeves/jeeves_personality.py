@@ -22,10 +22,13 @@ import sys
 
 class JeevesPersonality:
     def __init__(self, filename='personality.json'):
-        # Määritetään polku suhteessa tämän tiedoston sijaintiin
-        # Oletetaan, että resources-kansio on samassa tasossa kuin skriptit
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.config_path = os.path.join(base_dir, 'resources', filename)
+        # 1. Haetaan tämän tiedoston (jeeves_personality.py) sijainti
+        # Tämä palauttaa: C:\Users\lahti\Desktop\Projektit\Flow\Ask Jeeves
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # 2. Muodostetaan polku resources-kansioon, joka on samassa paikassa
+        # Tämä muodostaa: C:\Users\lahti\Desktop\Projektit\Flow\Ask Jeeves\resources\personality.json
+        self.config_path = os.path.join(current_dir, 'resources', filename)
 
         self.personality_data = self._load_personality()
 

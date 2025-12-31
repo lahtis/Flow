@@ -5,7 +5,7 @@ Jeeves - Personal news butler
 File: jeeves_mirror.py
 Author: [Tuomas Lähteenmäki]
 Version: v2.1.0
-Licence: GNU General Public License v3.0 (GPLv3) / json MIT
+Licence: GNU General Public License v3.0 (GPLv3)
 Website:
 
 Description: This software fetches news from RSS feeds, analyzes it with AI models (Gemini/Groq), and presents it in a localized manner.
@@ -16,9 +16,15 @@ Notes:
 import json
 import os
 import time
+import sys
+import io
 import configparser
 from groq import Groq
 from jeeves_logic import JeevesMemory, CONFIG_FILE, get_localized_text
+
+# Pakotetaan standarditulosteet UTF-8 muotoon
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 class JeevesMirror:
     def __init__(self):
@@ -114,4 +120,3 @@ if __name__ == "__main__":
         mirror.process_queue()
         final_msg = get_localized_text("work_finished", mirror.lang)
         print(f"\n[*] Jeeves Mirror: {final_msg}")
-
