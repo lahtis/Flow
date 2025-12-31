@@ -1,4 +1,6 @@
+# Jeeves News Butler - Dependency Requirements
 google-genai
 groq
 feedparser
 customtkinter
+Pillow
