@@ -40,7 +40,7 @@ sudo apt-get install python3-tk
 1.1 **Install Dependencies**
 
 ```bash
-`python -m pip install groq google-genai feedparser customtkinter`
+`python -m pip install groq google-genai feedparser customtkinter pillow`
 
 or
 
