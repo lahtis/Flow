@@ -1,4 +1,4 @@
-# Jeeves - Personal News Butler (v2.1.0)
+# Jeeves - Personal News Butler (v3.1.0)
 
 Jeeves is a sophisticated and discreet personal news butler designed to fetch technology and cybersecurity news from RSS feeds, analyze them using AI, and present them in a refined, localized manner.
 
