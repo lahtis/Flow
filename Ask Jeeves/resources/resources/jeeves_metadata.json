@@ -1,0 +1,100 @@
+{
+  "fi": {
+    "ui": {
+      "gui_title": "Jeeves - Tilannehuone",
+      "gui_refresh": "Päivitä uutiset",
+      "gui_refreshing": "Noudetaan...",
+      "gui_news_feed": "Uutisvirta",
+      "gui_select_news": "Valitse uutinen, sir.",
+      "gui_open_web": "Avaa selaimessa",
+      "gui_system_log": "Järjestelmäloki:",
+      "gui_loaded": "Käyttöliittymä ladattu onnistuneesti.",
+      "gui_refresh_start": "Aloitetaan uutisrutiini...",
+      "gui_refresh_done": "Päivitys valmis, sir.",
+      "fetching_news": "Haetaan uutisia",
+      "fetching_news_gemini": "Haetaan tuoreimmat uutiset (Gemini)...",
+      "added_news": "Lisätty {} uutta uutista jonoon, sir.",
+      "pending": "Odottaa hovimestarin analyysiä, sir.",
+      "pending_count_msg": "uutista odottaa yhä analyysia.",
+      "analyzing_msg": "Analysoidaan",
+      "analysis_start": "Kaikki uudet uutiset arkistoitu. Aloitan analyysin, sir...",
+      "analysis_done": "Analyysi valmis.",
+      "work_finished": "Työ suoritettu tältä erää, sir.",
+      "quota_error": "Gemini-kiintiö täynnä. Lopetetaan tältä erää, sir.",
+      "activating_mirror": "Aktivoidaan Groq-peili, sir...",
+      "report_ready": "Kaikki valmista. Tässä raporttinne:\n",
+      "no_news": "Arkisto on tyhjä tältä ajanjaksolta, sir.",
+      "no_pending_work": "Ei analysoitavia uutisia tällä erää, sir.",
+      "source": "Lähde"
+    },
+    "personality": {
+      "greeting": "Hyvää huomenta, sir. Tässä on tuorein tilannekatsaus.",
+      "greeting_morning": "Hyvää huomenta, sir. Tässä on tuorein tilannekatsaus.",
+      "greeting_day": "Hyvää päivää, sir. Tässä on päivän tilannekatsaus.",
+      "greeting_afternoon": "Hyvää iltapäivää, sir. Tässä on tuorein tilannekatsaus.",
+      "greeting_evening": "Hyvää iltaa, sir. Tässä on illan viimeisin tilannekatsaus.",
+      "greeting_night": "Hyvää yötä, sir. Tässä on yöllinen tilannekatsaus.",
+      "analysis_intro": "Hyvää päivää, Olen Jeeves, teidän hovimestarinne. Uutinen, jonka haluatte.",
+      "analysis_outro": "Toivottavasti tämä tiivis yhteenveto on ollut avuksi, herrani. Voinko olla avuksi muissa asioissa?",
+      "common_greetings": [
+        "Hyvää päivää, herrani.",
+        "Hyvää päivää, sir.",
+        "Tässä on analyysi:",
+        "Hyvä herrani, minä Jeeves, olen täällä palvelemaan teitä.",
+        "Uutinen, jonka te pyysitte minua tiivistämään,",
+        "Onko teillä muita pyynnöksiä, joita voisin toteuttaa?",
+        "Hyvä herrani, minä olen Jeeves,"
+      ]
+    },
+    "ai_instruction": "Analysoi seuraava uutinen. Kirjoita tiivis, asiallinen ja selkeä tiivistelmä suomeksi. ÄLÄ sisällytä tervehdystä, nimeäsi tai lopputoivotuksia. Kirjoita vain uutisen tekninen sisältö."
+  },
+  "en": {
+    "ui": {
+      "gui_title": "Jeeves - Situation Room",
+      "gui_refresh": "Refresh News",
+      "gui_refreshing": "Fetching...",
+      "gui_news_feed": "News Feed",
+      "gui_select_news": "Please select a news item, sir.",
+      "gui_open_web": "Open in Browser",
+      "gui_system_log": "System Log:",
+      "gui_loaded": "UI loaded successfully.",
+      "gui_refresh_start": "Starting news routine...",
+      "gui_refresh_done": "Refresh complete, sir.",
+      "fetching_news": "Fetching news",
+      "fetching_news_gemini": "Fetching latest news (Gemini)...",
+      "added_news": "Added {} new news items to the queue, sir.",
+      "pending": "Waiting for the butler's analysis, sir.",
+      "pending_count_msg": "summaries are still pending.",
+      "analyzing_msg": "Analyzing",
+      "analysis_start": "All new stories archived. Starting analysis, sir...",
+      "analysis_done": "Analysis complete.",
+      "work_finished": "Work complete for now, sir.",
+      "quota_error": "Gemini quota exhausted. Stopping for now, sir.",
+      "activating_mirror": "Activating Groq Mirror, sir...",
+      "report_ready": "Everything is ready. Here is your report:\n",
+      "no_news": "The archive is empty for this period, sir.",
+      "no_pending_work": "No news to analyze at this time, sir.",
+      "source": "Source"
+    },
+    "personality": {
+      "greeting": "Good morning, sir. Here is the latest situational report.",
+      "greeting_morning": "Good morning, sir. Here is the latest situation report.",
+      "greeting_day": "Good day, sir. Here is the daily briefing.",
+      "greeting_afternoon": "Good afternoon, sir. Here is the latest situational report.",
+      "greeting_evening": "Good evening, sir. Here is the latest situation report for the evening.",
+      "greeting_night": "Good night, sir. Here is the nightly situation report.",
+      "analysis_intro": "I am Jeeves, your butler, and I am pleased to summarize this news for you.",
+      "analysis_outro": "I hope this summary has been useful to you, sir.",
+      "common_greetings": [
+        "Good day, sir.",
+        "I am Jeeves, your butler.",
+        "Here is the analysis:",
+        "I am here to serve you.",
+        "The news you asked me to summarize,",
+        "Do you have any other requests?",
+        "My dear sir, I, Jeeves,"
+      ]
+    },
+    "ai_instruction": "Analyze the following news. Write a concise, factual, and clear summary in English. Do NOT include greetings, your name, or any closing remarks. Only write the technical content of the news."
+  }
+}

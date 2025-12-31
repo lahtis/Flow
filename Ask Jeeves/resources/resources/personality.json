@@ -1,0 +1,214 @@
+{
+  "fi": {
+    "ui": {
+    "gui_title": "Jeeves - Teidän henkilökohtainen hovimestarinne",
+    "gui_refresh": "Päivitä uutiset",
+    "gui_refreshing": "Päivitetään...",
+    "gui_news_feed": "Uutisvirta",
+    "gui_select_news": "Valitkaa uutinen listalta, sir.",
+    "gui_open_web": "Lue alkuperäinen artikkeli",
+    "gui_system_log": "Järjestelmäloki",
+    "gui_loaded": "Käyttöliittymä ladattu onnistuneesti, sir.",
+    "gui_refresh_start": "Aloitetaan uutisten nouto...",
+    "gui_refresh_done": "Päivitys valmis. Kaikki on ajan tasalla, herra.",
+    "gui_startup_msg": "[*] Jeeves: Käynnistetään alkurutiinit, sir...",
+    "status_ready": "Päivitys valmis, sir.",
+    "fetching_news": "Haetaan uutisia",
+    "added_news": "Uudet uutiset lisätty arkistoon.",
+    "analysis_start": "Aloitetaan uutisten analysointi...",
+    "analyzing": "Analysoidaan uutista",
+    "analyzing_msg": "Analysoidaan",
+    "analysis_intro": "Tässä on tiivistelmä uutisesta, sir:",
+    "analysis_done": "Analyysi valmistui onnistuneesti.",
+    "analysis_archived": "Analyysi arkistoitu onnistuneesti, sir.",
+    "analysis_failed": "Analyysin arkistointi epäonnistui, sir.",
+    "archive_rotation": "Siirretty {} uutista arkistoon: {}",
+    "archive_error": "Arkistoinnissa ilmeni viiveitä, sir: {}",
+    "no_pending_work": "Kaikki tehtävät suoritettu, sir.",
+    "common_greetings": ["Hyvää päivää,", "Tervehdys, sir.", "Tässä uutinen."],
+    "pending": "Odottaa hovimestarin analyysiä, sir.",
+    "processing": "uutista odottaa vielä analyysia, sir.",
+    "pending_count_msg": "uutista odottaa analyysiä, sir.",
+    "fetching_news_gemini": "Pyydetään tiivistelmää Geminiltä...",
+    "activating_mirror": "Siirrytään käyttämään varajärjestelmää (Mirror)...",
+    "quota_error": "Pahoittelut sir, tekoälyn käyttökiintiö on täyttynyt tältä erää.",
+    "starting_routines": "Käynnistetään rutiinit ja valmistellaan raporttia, sir...",
+    "work_finished": "Tehtävä suoritettu, sir.",
+    "report_ready": "Raportti on valmis tarkasteltavaksi, sir.",
+    "error_occurred": "Pahoittelut, sir, tapahtui odottamaton virhe.",
+    "no_priority_news": "Ei kiireellisiä uutisia tällä kertaa, herra.",
+    "source": "Lähde",
+    "sources_label": "LÄHTEET JA VIITTEET:",
+    "pending": "analysoimatta",
+    "processing": "uutista odottaa vielä analyysia, sir.",
+    "source_criticism_label": "LÄHDEANALYYSI:",
+    "reliability_note": "Huomio: Tämä uutinen perustuu yhteen lähteeseen. Suosittelen vertailua muihin teknologiafoorumeihin, sir.",
+    "update_available": "{greeting}. \nHuomasin, että versio {version} on saatavilla. Päivitetäänkö?",
+    "all_systems_ok": "{greeting}. \nKaikki järjestelmät ovat ajan tasalla. Kuinka voin auttaa?",
+    "gui_filtering_msg": "Etsitään uutisia {category}-kategoriasta, sir.",
+    "gui_news_feed": "Uutisvirta",
+    "category": {
+      "Linux": "Linux",
+      "Security": "tietoturva",
+      "Ubuntu": "Ubuntu",
+      "Gaming": "pelit",
+      "Steam": "Steam",
+      "Hardware": "laitteisto",
+      "Default": "oletus"
+    }
+    },
+    "archive": {
+      "metadata_error": "[!] Jeeves: Virhe metadataa lukiessa: ",
+      "not_found": "[!] Jeeves: Metadata-tiedostoa ei löytynyt: ",
+      "synced": "[*] Jeeves: Herra, synkronoitu {} uutta uutista arkistoon."
+    },
+    "ai_instruction": "Analysoi seuraava uutinen. Kirjoita tiivis, asiallinen ja selkeä tiivistelmä suomeksi. ÄLÄ sisällytä tervehdystä, nimeäsi tai lopputoivotuksia. Kirjoita vain uutisen tekninen sisältö. LISÄÄ loppuun lyhyt 'Lähdearvio', jossa kerrot uutisen varmuuden (esim. virallinen tiedote, vakaa julkistus, vahvistamaton huhu tai benchmark-vuoto) ja arvion sen kriittisyydestä.",
+    "personality": {
+      "greetings": {
+        "morning": "Hyvää huomenta, sir. Tässä on tuorein tilannekatsaus.",
+        "day": "Hyvää päivää, sir. Tässä on päivän tilannekatsaus.",
+        "afternoon": "Hyvää iltapäivää, sir. Tässä on tuorein tilannekatsaus.",
+        "evening": "Hyvää iltaa, sir. Tässä on illan viimeisin tilannekatsaus.",
+        "night": "Hyvää yötä, sir. Tässä on yöllinen tilannekatsaus."
+      },
+      "category_comments": {
+        "Security": "Minulla on valitettavasti hieman huolestuttavia uutisia tietoturvasta, sir.",
+        "Critical": "Tämä vaikuttaa erittäin kriittiseltä, herra. Suosittelen välitöntä huomiota.",
+        "Steam": "Pieni hetki viihteelle, herra? Steam-uutisia, olkaa hyvä.",
+        "Linux": "Kernel-rintamalla on taas liikettä, kuten saatoimme odottaa, sir.",
+        "Ubuntu": "Ubuntu-yhteisössä on tapahtunut päivityksiä, sir.",
+        "Gaming": "Pelaamiseen liittyvää uutisointia, olkaa hyvä.",
+        "Hardware": "Rautapuolen uutisia ja benchmark-tuloksia, herra.",
+        "Default": "Tässä on viimeisimmät havainnot tästä kategoriasta, sir."
+      },
+      "analysis_intro": "Hyvää päivää, Olen Jeeves, teidän hovimestarinne. Uutinen, jonka haluatte.",
+      "analysis_outro": "Toivottavasti tämä tiivis yhteenveto on ollut avuksi, herrani. Voinko olla avuksi muissa asioissa?",
+      "idle_comments": [
+        "Hyvä herrani, minä olen Jeeves, olen täällä palvelemaan teitä.",
+        "Onko teillä muita pyyntöjä, joita voisin toteuttaa?",
+        "Odotan ohjeitanne, herra. Kaikki on tällä hetkellä valmiina."
+      ]
+    }
+  },
+  "en": {
+    "ui": {
+    "gui_title": "Jeeves - Your Personal Butler",
+    "gui_refresh": "Refresh News",
+    "gui_refreshing": "Refreshing...",
+    "gui_news_feed": "News Feed",
+    "gui_select_news": "Please select a news item from the list, sir.",
+    "gui_open_web": "Read Original Article",
+    "gui_system_log": "System Log",
+    "gui_loaded": "Interface loaded successfully, sir.",
+    "gui_refresh_start": "Starting news retrieval...",
+    "gui_refresh_done": "Refresh complete. Everything is up to date, sir.",
+    "gui_startup_msg": "[*] Jeeves: Starting the initial routines, sir...",
+    "status_ready": "Update ready, sir.",
+    "fetching_news": "Fetching news",
+    "added_news": "New news added to the archive.",
+    "analysis_start": "Starting news analysis...",
+    "analyzing": "Analyzing news",
+    "analyzing_msg": "Analyzing",
+    "analysis_intro": "Here is a summary of the news, sir:",
+    "analysis_done": "The analysis was completed successfully.",
+    "analysis_archived": "Analysis archived successfully, sir.",
+    "analysis_failed": "Analysis archiving failed, sir.",
+    "archive_rotation": "Moved {} old news to archive: {}",
+    "archive_error": "There were delays in archiving, sir: {}",
+    "no_pending_work": "All tasks completed, sir.",
+    "common_greetings": ["Good day,", "Greetings, sir.", "Here is the news,"],
+    "pending": "Awaiting the butler's analysis, sir.",
+    "processing": "Analyzing news, please wait a moment, sir...",
+    "pending_count_msg": "news items are awaiting analysis, sir.",
+    "fetching_news_gemini": "Fetching summary from Gemini...",
+    "activating_mirror": "Switching to backup system (Mirror)...",
+    "quota_error": "Apologies sir, the AI usage quota has been reached for now.",
+    "work_finished": "Task completed, sir.",
+    "starting_routines": "Let's start the routines and prepare the report, sir...",
+    "report_ready": "The report is ready for review, sir.",
+    "error_occurred": "Apologies, sir, an unexpected error occurred.",
+    "no_priority_news": "No urgent news at the moment, sir.",
+    "source": "Source",
+    "sources_label": "SOURCES AND REFERENCES:",
+    "pending": "unprocessed",
+    "processing": "the news is still awaiting analysis, sir.",
+    "source_criticism_label": "SOURCE ANALYSIS:",
+    "reliability_note": "Note: This news is based on a single source. I recommend comparison with other technology forums, sir.",
+    "update_available": "{greeting}. \nI noticed that the version {version} is available. Shall we update?",
+    "all_systems_ok": "{greeting}. \nAll systems are up to date. How can I help?",
+    "gui_filtering_msg": "Searching for news by category {category}, sir.",
+    "gui_news_feed": "News feed",
+    "category": {
+      "Linux": "Linux",
+      "Security": "Security",
+      "Ubuntu": "Ubuntu",
+      "Gaming": "Gaming",
+      "Steam": "Steam",
+      "Hardware": "Hardware",
+      "Default": "Default"
+    }
+    },
+    "archive": {
+      "metadata_error": "[!] Jeeves: Error reading metadata: ",
+      "not_found": "[!] Jeeves: Metadata file not found: ",
+      "synced": "[*] Jeeves: Sir, synchronized {} new items to the archive."
+    },
+    "ai_instruction": "Analyze the following news. Write a concise, factual, and clear summary in Finnish. DO NOT include greetings, your name, or closing remarks. Only write the technical content of the news. ADD at the end a short 'Source Evaluation', stating the certainty of the news (e.g., official statement, stable announcement, unconfirmed rumor, or benchmark leak) and an assessment of its criticality.",
+    "personality": {
+      "greetings": {
+        "morning": "Good morning, sir. Here is the latest situational report.",
+        "day": "Good day, sir. Here is the situation report for the day.",
+        "afternoon": "Good afternoon, sir. Here is the latest situational report.",
+        "evening": "Good evening, sir. Here is the latest situational report for the evening.",
+        "night": "Good night, sir. Here is the nightly situational report."
+      },
+      "category_comments": {
+      "Security": "I unfortunately have some somewhat concerning news about security, sir.",
+      "Critical": "This seems extremely critical, sir. I recommend immediate attention.",
+      "Steam": "A brief moment for some entertainment, sir? Steam news, here you go.",
+      "Linux": "There's movement on the kernel front again, as we might have expected, sir.",
+      "Ubuntu": "Updates have occurred in the Ubuntu community, sir.",
+      "Gaming": "News related to gaming, here you go.",
+      "Hardware": "Hardware news and benchmark results, sir.",
+      "Default": "Here is the news you requested, sir."
+      },
+      "analysis_intro": "I am Jeeves, your butler, and I am pleased to summarize this news for you.",
+      "analysis_outro": "I hope this summary has been useful to you, sir. Can I assist you with anything else?",
+      "idle_comments": [
+        "I am here to serve you, sir.",
+        "Do you have any other requests I could fulfill?",
+        "I await your instructions, sir."
+      ]
+    }
+  },
+  "category_styles": {
+    "Security": {
+      "icon": "🛡️",
+      "color": "#3d1414"
+    },
+    "Linux": {
+      "icon": "🐧",
+      "color": "#1e3d1e"
+    },
+    "Gaming": {
+      "icon": "🎮",
+      "color": "#2a1e3d"
+    },
+    "Steam": {
+      "icon": "💨",
+      "color": "#2a475e"
+    },
+    "Ubuntu": {
+      "icon": "🧡",
+      "color": "#E95420"
+    },
+    "Hardware": {
+      "icon": "🔌",
+      "color": "#2e2e2e"
+    },
+    "Default": {
+      "icon": "📰",
+      "color": "#2b2b2b"
+    }
+  }
+}
