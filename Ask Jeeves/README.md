@@ -2,39 +2,43 @@
 
 Jeeves is a sophisticated and discreet personal news butler designed to fetch technology and cybersecurity news from RSS feeds, analyze them using AI, and present them in a refined, localized manner.
 
+Tailored for power users who value both professional insights and a polished user experience, Jeeves ensures you stay informed without the noise of traditional news aggregators.
 
 
 ## 🛠 Features
 
-* **Multi-source Fetching:** Monitors Linux news (Phoronix), security vulnerabilities (NVD/CVE), and the Ubuntu ecosystem.
-* **AI-Powered Analysis:** Utilizes the Google Gemini 2.0 Flash model for intelligent news summarization.
-* **Failover System (Mirror):** If Gemini's quota is exhausted, Jeeves automatically switches to the Groq mirror server (Llama-3.3).
-* **Dynamic Localization:** Full support for Finnish (fi) and English (en) via the `jeeves_metadata.json` file.
-* **Smart Memory:** Automatically archives news items older than 14 days to keep the daily memory lightweight.
-* **Etiquette:** Greets the user based on the time of day (Morning, Day, Afternoon, Evening, Night).
+* **Multi-source Intelligence:** Continuously monitors specialized feeds including Linux hardware (Phoronix), security vulnerabilities (NVD/CVE), and the broader Ubuntu ecosystem.
+* **AI-Powered Analysis:** everages the **Google Gemini 2.0 Flash** model to provide concise, context-aware news summarization and analysis.
+* **Failover System (Mirror):** Features an automated failover system. If the Gemini quota is exceeded, Jeeves seamlessly switches to the **Groq (Llama 3.3)** mirror server to ensure uninterrupted service.
+* **Dynamic Localization:** Full bilingual support for **Finnish (fi)** and **English (en)**, managed through a central localization file.
+* **Smart Memory:** Implements a "Smart Memory" system that archives news items older than 14 days, maintaining a lightweight and high-performance local database.
+* **Butler Etiquette:** A personalized personality engine that greets the user with appropriate decorum based on the specific time of day.
 
 
 
-## 📂 File Structure
+## 📂 Project Structure
 
-| File | Description |
+| File / Folder | Description |
 | :--- | :--- |
-| `ask_jeeves.py` | Main CLI-program: Fetch logic and AI integration. |
-| `jeeves_gui.py` | Main UI: Fetch logic and AI integration. |
-| `jeeves_logic.py` | Interface and reporting logic (CLI). |
-| `jeeves_mirror.py` | Failover system for Groq integration. |
-| `resources/` | Contains `jeeves_metadata.json` (localization strings). |
-| `archive/` | News archives and `jeeves_memory.json`. |
-| `jeeves.conf` | Technical configuration (API keys, feeds). |
+| `jeeves_gui.py` | **Main GUI Application**: The modern visual interface for the user. |
+| `ask_jeeves.py` | **CLI Controller**: Main entry point for command-line operations. |
+| `jeeves_logic.py` | **Core Engine**: Handles RSS fetching, AI analysis, and memory management. |
+| `jeeves_personality.py` | **Personality Engine**: Logic for Jeeves' greetings and commentary. |
+| `jeeves_mirror.py` | **Failover System**: Handles API redundancy (Groq/Gemini). |
+| `resources/` | **Assets**: Contains `personality.json` (styles/icons) and `jeeves_avatar.png`. |
+| `archive/` | **Data Storage**: Local news database (`jeeves_memory.json`) and archives. |
+| `jeeves.conf` | **Configuration**: Stores API keys and source RSS feed URLs. |
+| `requirements.txt` | **Dependencies**: List of required Python libraries for the project. |
 
 
 
 ## 🚀 Getting Started
 
-1 **Prerequisites**
-Ensure you have Python 3.x installed. On Linux (Ubuntu/Debian/Windows), you may also need to install the header files for Tkinter:
+### 1. Prerequisites
+Ensure you have **Python 3.10+** installed. On Linux (Ubuntu/Debian), you must install the Tkinter header files:
 
 ```bash
+sudo apt-get update
 sudo apt-get install python3-tk
 
 1.1 **Install Dependencies**
