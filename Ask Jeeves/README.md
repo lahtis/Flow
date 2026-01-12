@@ -40,17 +40,17 @@ Ensure you have **Python 3.10+** installed. On Linux (Ubuntu/Debian), you must i
 ```bash
 sudo apt-get update
 sudo apt-get install python3-tk
-
+```
 1.1 **Install Dependencies**
 
 ```bash
-`python -m pip install groq google-genai feedparser customtkinter pillow`
-
+python -m pip install groq google-genai feedparser customtkinter pillow
+```
 or
 
 ```bash
-`python -m pip install -r requirements.txt`
-
+python -m pip install -r requirements.txt`
+```
 
 2. **Environment Check:**
    Run `python jeeves_logic.py`. The program will automatically create missing folders and a `.gitignore` file to protect your settings.
@@ -67,7 +67,7 @@ or
    
    [API_KEYS]
    groq = YOUR_GROQ_KEY
-
+```
 
 3. **Usage:**
 * Update news and perform analysis: `python ask_jeeves.py`
