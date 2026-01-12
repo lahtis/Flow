@@ -60,7 +60,7 @@ python -m pip install -r requirements.txt`
 
 3. **Configuration:**
    Open the generated `jeeves.conf` in the root directory and add your API keys:
-   ```ini
+```ini
    [SETTINGS]
    api_key = YOUR_GEMINI_KEY
    language = en
@@ -80,6 +80,6 @@ python -m pip install -r requirements.txt`
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-5. **Jeeves is at your service, sir.**
+**Jeeves is at your service, sir.**
 
   
